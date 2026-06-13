@@ -33,8 +33,17 @@ func usage() {
 /// Build the local sink + store. `--json` emits one JSON object per update;
 /// otherwise a human status line.
 func makeStore(json: Bool) -> TaskStore {
-    TaskStore(stallAfter: 120) { task in
+    // If a Glance agent (menu-bar app / sync-serve) is running locally, forward
+    // task updates to it so this command's task reaches the phone too — and,
+    // for `run --progress`, carries a real % that fills the phone's bar.
+    var forwarder: ControlClient?
+    if let key = try? GlanceCrypto.loadKey(at: GlanceCrypto.defaultKeyURL()) {
+        forwarder = try? ControlClient(port: glanceControlPort, codec: SecureCodec(key: key))
+        forwarder?.start()
+    }
+    return TaskStore(stallAfter: 120) { task in
         print(json ? TaskFormatter.json(for: task) : TaskFormatter.line(for: task))
+        forwarder?.send(.update(task))
     }
 }
 
@@ -99,6 +108,15 @@ case "sync-serve":
             tcpPub.publish(task)
             print(TaskFormatter.line(for: task))   // local echo
         }
+        let control = try? ControlServer(port: glanceControlPort, codec: codec)
+        control?.onReceive = { env in if let t = env.task { store.upsert(t) } }
+        control?.start()
+        advertiser.snapshotProvider = {
+            let active = store.activeTasks
+            let recent = store.allTasks.filter { $0.state.isTerminal }
+                .sorted { ($0.finishedAt ?? .distantPast) > ($1.finishedAt ?? .distantPast) }.prefix(10)
+            return active + Array(recent)
+        }
         let detectors: [Detector] = [DownloadsDetector(store: store), ProcessDetector(store: store)]
         detectors.forEach { $0.start() }
         startStallTimer(store)
@@ -110,7 +128,7 @@ case "sync-serve":
           Ctrl-C to stop
 
         """.utf8))
-        withExtendedLifetime((advertiser, server, mpcPub, tcpPub, store, detectors)) {
+        withExtendedLifetime((advertiser, server, control as Any, mpcPub, tcpPub, store, detectors)) {
             RunLoop.main.run()
         }
     } catch {

@@ -1,8 +1,7 @@
 import SwiftUI
 
-/// Minimal pairing: paste the base64 key the Mac agent prints (`glance sync-serve`
-/// shows the path + fingerprint; `cat ~/.glance/key`). A QR scanner is the
-/// release UX — see README — but paste works today and keeps the secret off any
+/// Paste the base64 key the Mac menu-bar app copies (Glance → Copy pairing key).
+/// QR scanning is the eventual UX; paste works today and keeps the secret off any
 /// network.
 struct PairingView: View {
     @EnvironmentObject private var model: AppModel
@@ -13,9 +12,8 @@ struct PairingView: View {
         NavigationStack {
             Form {
                 Section {
-                    Text("Pair with your Mac")
-                        .font(.title2).bold()
-                    Text("On your Mac, run `glance sync-serve` and paste the contents of `~/.glance/key` below. Both devices must share this key — it never leaves your devices.")
+                    Text("Pair with your Mac").font(.title2).bold()
+                    Text("On your Mac, click Glance in the menu bar → Copy pairing key, then paste it below. Both devices share this key — it never leaves your devices.")
                         .font(.callout).foregroundStyle(.secondary)
                 }
                 Section("Pairing key") {

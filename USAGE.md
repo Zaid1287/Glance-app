@@ -67,8 +67,6 @@ In Xcode:
 - **Bundle IDs must be unique to you.** The project uses `com.zaid.glance*` —
   change the prefix in `app/project.yml` (and re-run `xcodegen generate`) if you
   fork it.
-- **No App Groups** → the Home-screen *widget*'s live data is off (the Live
-  Activity still works). App Groups need a paid account.
 - **Apple Watch is excluded from the build** — a free team can't sign a watchOS
   app without a registered Apple Watch. Re-add it by restoring the
   `GlanceWatch` embed in `app/project.yml` once you have a paid account or a

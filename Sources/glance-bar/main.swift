@@ -13,6 +13,7 @@ final class GlanceBarController: NSObject {
     private var stallTimer: Timer?
     private var advertiser: MultipeerAdvertiser?
     private var server: TCPServer?
+    private var control: ControlServer?
     private var publishers: [SyncPublisher] = []
     private var keyFingerprint: String?
 
@@ -27,6 +28,12 @@ final class GlanceBarController: NSObject {
         }
         statusItem.menu = menu
 
+        store = TaskStore(stallAfter: 120) { [weak self] task in
+            guard let self else { return }
+            self.publishers.forEach { $0.publish(task) }
+            DispatchQueue.main.async { self.rebuildMenu() }
+        }
+
         // The menu-bar app IS the agent (Ollama-style): detect tasks, advertise
         // over the LAN, hold the pairing key — no Terminal needed.
         if let key = try? GlanceCrypto.loadOrCreateKey(at: GlanceCrypto.defaultKeyURL()) {
@@ -35,25 +42,42 @@ final class GlanceBarController: NSObject {
             let adv = MultipeerAdvertiser(displayName: Host.current().localizedName ?? "Mac", codec: codec)
             adv.start()
             advertiser = adv
+            adv.snapshotProvider = { [weak self] in self?.snapshotTasks() ?? [] }
             publishers.append(SyncPublisher(transport: adv))
             if let srv = try? TCPServer(port: 7777, codec: codec, lanExposed: false) {
                 srv.start()
                 server = srv
                 publishers.append(SyncPublisher(transport: srv))
             }
+            // Accept local task injection from `glance run`/`watch`/`attach`
+            // (their tasks carry a real % → fills the phone's progress bar).
+            if let ctl = try? ControlServer(port: glanceControlPort, codec: codec) {
+                ctl.onReceive = { [weak self] env in
+                    guard let self, let t = env.task else { return }
+                    self.store.upsert(t)
+                }
+                ctl.start()
+                control = ctl
+            }
         }
 
-        store = TaskStore(stallAfter: 120) { [weak self] task in
-            guard let self else { return }
-            self.publishers.forEach { $0.publish(task) }
-            DispatchQueue.main.async { self.rebuildMenu() }
-        }
         detectors = [DownloadsDetector(store: store), ProcessDetector(store: store)]
         detectors.forEach { $0.start() }
         stallTimer = Timer.scheduledTimer(withTimeInterval: 15, repeats: true) { [weak self] _ in
             self?.store.checkStalls()
         }
         rebuildMenu()
+    }
+
+    /// Active tasks + the few most-recent finished ones, replayed to a freshly
+    /// connected phone so it never stays stuck on a stale state.
+    private func snapshotTasks() -> [TrackedTask] {
+        let active = store.activeTasks
+        let recent = store.allTasks
+            .filter { $0.state.isTerminal }
+            .sorted { ($0.finishedAt ?? .distantPast) > ($1.finishedAt ?? .distantPast) }
+            .prefix(10)
+        return active + Array(recent)
     }
 
     private func rebuildMenu() {

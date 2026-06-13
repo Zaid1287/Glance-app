@@ -48,14 +48,13 @@ struct TaskRow: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack {
-                Image(systemName: glyph)
-                    .foregroundStyle(tint)
+                Image(systemName: glyph).foregroundStyle(tint)
                 Text(task.name).font(.headline).lineLimit(1)
                 Spacer()
                 Text(task.kind.rawValue).font(.caption2).foregroundStyle(.secondary)
             }
             if let fraction = cs.fraction, !cs.isTerminal {
-                ProgressView(value: fraction).tint(tint)
+                ThickBar(fraction: fraction, color: tint, height: 10)
             }
             let subtitle = GlanceFormat.subtitle(cs)
             if !subtitle.isEmpty {

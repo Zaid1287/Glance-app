@@ -20,6 +20,11 @@ public final class MultipeerAdvertiser: NSObject, OutboundTransport {
     private let advertiser: MCNearbyServiceAdvertiser
     private let codec: SecureCodec
 
+    /// Tasks to replay to a peer the instant it connects, so a phone that
+    /// (re)connects catches up to the true state — including a task that finished
+    /// while it was away (fixes a Live Activity stuck mid-progress).
+    public var snapshotProvider: (() -> [TrackedTask])?
+
     public init(displayName: String, codec: SecureCodec) {
         let peerID = MCPeerID(displayName: String(displayName.prefix(63)))
         session = MCSession(peer: peerID, securityIdentity: nil, encryptionPreference: .required)
@@ -95,7 +100,13 @@ extension MultipeerBrowser: MCSessionDelegate {
 
 // Advertiser needs a session delegate too (it doesn't consume inbound data).
 extension MultipeerAdvertiser: MCSessionDelegate {
-    public func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {}
+    public func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
+        guard state == .connected, let tasks = snapshotProvider?() else { return }
+        for task in tasks {
+            let data = codec.seal(.update(task))
+            if !data.isEmpty { try? session.send(data, toPeers: [peerID], with: .reliable) }
+        }
+    }
     public func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {}
     public func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {}
     public func session(_ session: MCSession, didStartReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, with progress: Progress) {}

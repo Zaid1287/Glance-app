@@ -5,8 +5,8 @@
 Leave your Mac running something long — a big download, a video export, an
 `npm install`, an ML training run — walk away, and check its status on your
 iPhone in two seconds: a **Live Activity** on the Lock Screen, the **Dynamic
-Island**, a **Home Screen widget**, or your **Apple Watch**. No walking back to
-the machine, no screen sharing.
+Island**, or your **Apple Watch**. No walking back to the machine, no screen
+sharing.
 
 > **Status: working end-to-end on real hardware.** Mac agent → encrypted LAN →
 > iPhone Live Activity, verified on a physical iPhone. See [Status](#status).
@@ -52,7 +52,7 @@ file contents or command output.
 | `glance` | Mac CLI | The agent: detects tasks, wraps commands, publishes encrypted updates. |
 | `glance-bar` | Mac menu bar | Live status item (the local view), runs via SwiftPM. |
 | `GlanceCore` | shared Swift package | Task model, sync, crypto — used by Mac **and** iPhone. |
-| Glance app | iPhone | Pairing, task list, drives Live Activities + widgets. |
+| Glance app | iPhone | Pairing, task list, drives Live Activities. |
 | Glance watch | Apple Watch | Glance of the active task. |
 
 ## Security & privacy
@@ -72,9 +72,9 @@ See [SECURITY.md](SECURITY.md) and [PRIVACY.md](PRIVACY.md).
 | Mac agent core (model, detectors, CLI) | ✅ built + tested (40/40) |
 | Encrypted sync (wire, coalescer, MPC + TCP transports) | ✅ verified |
 | Menu-bar app | ✅ runs |
-| iPhone app + widgets + Live Activity | ✅ **running on a real iPhone** |
-| Apple Watch app | ✅ code complete; deferred in the build (needs a registered Apple Watch / paid account to sign) |
-| Home-widget live data | ⬜ needs an App Group (paid account) |
+| iPhone app + Live Activity (wheel→bar, haptic, persistent Done) | ✅ **running on a real iPhone** |
+| `glance run --progress` → fills the phone's bar (local control channel) | ✅ verified |
+| Apple Watch (Live Activity in the Smart Stack) | ✅ free; dedicated watch app deferred (needs paid account to sign) |
 | Away-from-Mac (app closed/off-network) | ⬜ needs an APNs push relay (paid account + server) |
 | Distribution (notarize Mac, App Store iPhone) | ⬜ packaging step |
 

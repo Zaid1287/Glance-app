@@ -5,6 +5,5 @@ import SwiftUI
 struct GlanceWidgetBundle: WidgetBundle {
     var body: some Widget {
         GlanceLiveActivity()
-        GlanceHomeWidget()
     }
 }

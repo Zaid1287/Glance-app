@@ -1,7 +1,6 @@
 import Foundation
 import SwiftUI
 import ActivityKit
-import WidgetKit
 import CryptoKit
 import GlanceCore
 #if canImport(UIKit)
@@ -22,6 +21,7 @@ final class AppModel: ObservableObject {
     private var browser: MultipeerBrowser?
     private var activities: [String: Activity<GlanceActivityAttributes>] = [:]
     private var firedDone: Set<String> = []   // tasks that already buzzed/notified
+    private var seenRunning: Set<String> = []  // tasks witnessed running this session
 
     init() {
         let key = try? PairingKeyStore.load()
@@ -69,30 +69,30 @@ final class AppModel: ObservableObject {
         tasks = subscriber.snapshot.sorted {
             ($0.finishedAt ?? .distantFuture) > ($1.finishedAt ?? .distantFuture)
         }
-        publishWidgetSummary()
+        publishSummary()
         if let task = envelope.task {
             Task { await syncActivity(task) }
         }
     }
 
-    private func publishWidgetSummary() {
+    private func publishSummary() {
         let active = activeTasks
         let top = active.first
-        let summary = GlanceSummary(
+        WatchLink.shared.sendSummary(GlanceSummary(
             activeCount: active.count,
             topName: top?.name,
             topSubtitle: top.map { GlanceFormat.subtitle(.init(from: $0)) },
-            updatedAt: Date())
-        SharedStore.write(summary)
-        WidgetCenter.shared.reloadAllTimelines()
-        WatchLink.shared.sendSummary(summary)
+            updatedAt: Date()))
     }
 
     private func syncActivity(_ task: TrackedTask) async {
         let cs = GlanceActivityAttributes.ContentState(from: task)
 
-        // Buzz + notify once, the first time a task reaches a terminal state.
-        if cs.isTerminal, !firedDone.contains(task.id) {
+        // Buzz + notify once when a task we saw running finishes. Gating on
+        // "seen running" stops replayed snapshots from buzzing for old tasks.
+        if !cs.isTerminal {
+            seenRunning.insert(task.id)
+        } else if seenRunning.contains(task.id), !firedDone.contains(task.id) {
             firedDone.insert(task.id)
             Haptics.taskFinished(success: task.state == .done)
             Notifier.taskFinished(task)
@@ -104,9 +104,8 @@ final class AppModel: ObservableObject {
         if let activity = activities[task.id] {
             if cs.isTerminal {
                 // Uber-Eats style: show the Done state and keep it on the Lock
-                // Screen — `.default` lets the system hold it (~4h / until the
-                // user swipes it away) instead of dismissing immediately.
-                await activity.end(content, dismissalPolicy: .default)
+                // Screen for up to 4h (or until the user swipes it away).
+                await activity.end(content, dismissalPolicy: .after(Date().addingTimeInterval(4 * 3600)))
                 activities[task.id] = nil
             } else {
                 await activity.update(content)

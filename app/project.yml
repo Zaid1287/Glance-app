@@ -27,6 +27,7 @@ targets:
       - Shared/GlanceActivityAttributes.swift
       - Shared/SharedStore.swift
       - Shared/WatchLink.swift
+      - Shared/ThickBar.swift
     dependencies:
       - package: GlanceCore
         product: GlanceCore
@@ -38,6 +39,8 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.zaid.glance
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        TARGETED_DEVICE_FAMILY: "1"
     info:
       path: GlanceApp/Info.plist
       properties:
@@ -57,6 +60,7 @@ targets:
       - GlanceWidget
       - Shared/GlanceActivityAttributes.swift
       - Shared/SharedStore.swift
+      - Shared/ThickBar.swift
     dependencies:
       - package: GlanceCore
         product: GlanceCore
