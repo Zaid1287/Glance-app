@@ -1,0 +1,101 @@
+name: Glance
+options:
+  bundleIdPrefix: app.glance
+  deploymentTarget:
+    iOS: "17.0"
+    watchOS: "10.0"
+  createIntermediateGroups: true
+
+packages:
+  GlanceCore:
+    path: ..
+
+settings:
+  base:
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    CODE_SIGN_STYLE: Automatic
+    DEVELOPMENT_TEAM: "MW45P4B969"
+
+targets:
+  # ----- iPhone app -----
+  GlanceApp:
+    type: application
+    platform: iOS
+    sources:
+      - GlanceApp
+      - Shared/GlanceActivityAttributes.swift
+      - Shared/SharedStore.swift
+      - Shared/WatchLink.swift
+    dependencies:
+      - package: GlanceCore
+        product: GlanceCore
+      - target: GlanceWidget
+        embed: true
+      # GlanceWatch embed removed for now: a free personal team can't generate a
+      # watchOS profile without a registered Apple Watch. Re-add `- target:
+      # GlanceWatch / embed: true` once a real Apple Watch is paired to Xcode.
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.zaid.glance
+    info:
+      path: GlanceApp/Info.plist
+      properties:
+        CFBundleDisplayName: Glance
+        UILaunchScreen: {}
+        NSSupportsLiveActivities: true
+        NSLocalNetworkUsageDescription: "Glance connects to your Mac on your local network to show task progress."
+        NSBonjourServices:
+          - _glance-sync._tcp
+          - _glance-sync._udp
+
+  # ----- Widgets + Live Activity (app extension) -----
+  GlanceWidget:
+    type: app-extension
+    platform: iOS
+    sources:
+      - GlanceWidget
+      - Shared/GlanceActivityAttributes.swift
+      - Shared/SharedStore.swift
+    dependencies:
+      - package: GlanceCore
+        product: GlanceCore
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.zaid.glance.widget
+    info:
+      path: GlanceWidget/Info.plist
+      properties:
+        CFBundleDisplayName: Glance
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+
+  # ----- Apple Watch app -----
+  GlanceWatch:
+    type: application
+    platform: watchOS
+    sources:
+      - GlanceWatch
+      - Shared/SharedStore.swift
+      - Shared/WatchLink.swift
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.zaid.glance.watchkitapp
+    info:
+      path: GlanceWatch/Info.plist
+      properties:
+        CFBundleDisplayName: Glance
+        WKApplication: true
+        WKCompanionAppBundleIdentifier: com.zaid.glance
+
+# Explicit shared scheme so GlanceApp always appears in the run dropdown
+# (and so the macOS CLI schemes — glance/glance-bar — aren't picked by mistake).
+schemes:
+  GlanceApp:
+    build:
+      targets:
+        GlanceApp: all
+    run:
+      config: Debug
+    archive:
+      config: Release
