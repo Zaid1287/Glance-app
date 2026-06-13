@@ -21,11 +21,13 @@ final class AppModel: ObservableObject {
     private let subscriber = SyncSubscriber()
     private var browser: MultipeerBrowser?
     private var activities: [String: Activity<GlanceActivityAttributes>] = [:]
+    private var firedDone: Set<String> = []   // tasks that already buzzed/notified
 
     init() {
         let key = try? PairingKeyStore.load()
         hasKey = key != nil
         keyFingerprint = key.map(GlanceCrypto.fingerprint)
+        Notifier.requestAuthorization()
     }
 
     /// Begin browsing for the paired Mac. No-op until a key exists.
@@ -87,13 +89,24 @@ final class AppModel: ObservableObject {
     }
 
     private func syncActivity(_ task: TrackedTask) async {
-        guard ActivityAuthorizationInfo().areActivitiesEnabled else { return }
         let cs = GlanceActivityAttributes.ContentState(from: task)
+
+        // Buzz + notify once, the first time a task reaches a terminal state.
+        if cs.isTerminal, !firedDone.contains(task.id) {
+            firedDone.insert(task.id)
+            Haptics.taskFinished(success: task.state == .done)
+            Notifier.taskFinished(task)
+        }
+
+        guard ActivityAuthorizationInfo().areActivitiesEnabled else { return }
         let content = ActivityContent(state: cs, staleDate: Date().addingTimeInterval(60 * 30))
 
         if let activity = activities[task.id] {
             if cs.isTerminal {
-                await activity.end(content, dismissalPolicy: .after(Date().addingTimeInterval(5)))
+                // Uber-Eats style: show the Done state and keep it on the Lock
+                // Screen — `.default` lets the system hold it (~4h / until the
+                // user swipes it away) instead of dismissing immediately.
+                await activity.end(content, dismissalPolicy: .default)
                 activities[task.id] = nil
             } else {
                 await activity.update(content)

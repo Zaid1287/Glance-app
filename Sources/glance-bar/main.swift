@@ -11,6 +11,10 @@ final class GlanceBarController: NSObject {
     private var store: TaskStore!
     private var detectors: [Detector] = []
     private var stallTimer: Timer?
+    private var advertiser: MultipeerAdvertiser?
+    private var server: TCPServer?
+    private var publishers: [SyncPublisher] = []
+    private var keyFingerprint: String?
 
     func start() {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
@@ -23,8 +27,26 @@ final class GlanceBarController: NSObject {
         }
         statusItem.menu = menu
 
-        store = TaskStore(stallAfter: 120) { [weak self] _ in
-            DispatchQueue.main.async { self?.rebuildMenu() }
+        // The menu-bar app IS the agent (Ollama-style): detect tasks, advertise
+        // over the LAN, hold the pairing key — no Terminal needed.
+        if let key = try? GlanceCrypto.loadOrCreateKey(at: GlanceCrypto.defaultKeyURL()) {
+            keyFingerprint = GlanceCrypto.fingerprint(key)
+            let codec = SecureCodec(key: key)
+            let adv = MultipeerAdvertiser(displayName: Host.current().localizedName ?? "Mac", codec: codec)
+            adv.start()
+            advertiser = adv
+            publishers.append(SyncPublisher(transport: adv))
+            if let srv = try? TCPServer(port: 7777, codec: codec, lanExposed: false) {
+                srv.start()
+                server = srv
+                publishers.append(SyncPublisher(transport: srv))
+            }
+        }
+
+        store = TaskStore(stallAfter: 120) { [weak self] task in
+            guard let self else { return }
+            self.publishers.forEach { $0.publish(task) }
+            DispatchQueue.main.async { self.rebuildMenu() }
         }
         detectors = [DownloadsDetector(store: store), ProcessDetector(store: store)]
         detectors.forEach { $0.start() }
@@ -36,6 +58,15 @@ final class GlanceBarController: NSObject {
 
     private func rebuildMenu() {
         menu.removeAllItems()
+
+        if let fp = keyFingerprint {
+            menu.addItem(header("Pairing"))
+            menu.addItem(disabled("Key fingerprint: \(fp)"))
+            let copy = NSMenuItem(title: "Copy pairing key", action: #selector(copyPairingKey), keyEquivalent: "c")
+            copy.target = self
+            menu.addItem(copy)
+            menu.addItem(.separator())
+        }
 
         let active = store.activeTasks.sorted { $0.createdAt < $1.createdAt }
         let recent = store.allTasks
@@ -63,6 +94,13 @@ final class GlanceBarController: NSObject {
         menu.addItem(.separator())
         let quit = NSMenuItem(title: "Quit Glance", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
         menu.addItem(quit)
+    }
+
+    @objc private func copyPairingKey() {
+        guard let data = try? Data(contentsOf: GlanceCrypto.defaultKeyURL()),
+              let key = String(data: data, encoding: .utf8) else { return }
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(key.trimmingCharacters(in: .whitespacesAndNewlines), forType: .string)
     }
 
     private func header(_ title: String) -> NSMenuItem {
