@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Glance — is it done yet?</title>
+  <meta name="description" content="Track long-running Mac tasks from your iPhone. Live Activities for downloads, builds, renders and training runs. Zero config, end-to-end encrypted." />
+  <link rel="icon" href="icon.png" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="nav">
+    <div class="brand">
+      <img src="icon.png" alt="Glance" class="brand-icon" />
+      <span>Glance</span>
+    </div>
+    <a class="nav-gh" href="https://github.com/Zaid1287/Glance">GitHub</a>
+  </header>
+
+  <main>
+    <section class="hero">
+      <img src="icon.png" alt="Glance icon" class="hero-icon" />
+      <h1>Is it done yet?</h1>
+      <p class="tagline">
+        Glance tracks long-running tasks on your Mac — downloads, builds, renders,
+        training runs — and shows their progress on your iPhone as a Live Activity.
+        No remote desktop. No walking back to the machine.
+      </p>
+
+      <div class="install">
+        <code id="cmd">curl -fsSL https://raw.githubusercontent.com/Zaid1287/Glance/main/install.sh | sh</code>
+        <button id="copy" onclick="copyCmd()">Copy</button>
+      </div>
+      <p class="install-note">
+        macOS · Apple silicon · free &amp; open source ·
+        <a href="#downloads">iPhone app →</a>
+      </p>
+    </section>
+
+    <section class="how">
+      <h2>How it works</h2>
+      <div class="pipeline">
+        <div class="step"><strong>Mac</strong><span>auto-detects the task</span></div>
+        <div class="arrow">→</div>
+        <div class="step"><strong>Encrypted LAN</strong><span>ChaCha20-Poly1305</span></div>
+        <div class="arrow">→</div>
+        <div class="step"><strong>iPhone</strong><span>Live Activity + Watch</span></div>
+      </div>
+      <p class="how-note">
+        Only task metadata leaves the Mac — never your files or command output —
+        and it's end-to-end encrypted with a key only your two devices share.
+      </p>
+    </section>
+
+    <section class="features">
+      <div class="card">
+        <h3>Zero-config detection</h3>
+        <p>Browser downloads, <code>npm</code>/<code>pip</code>/<code>cargo</code>/<code>docker</code>/<code>rsync</code> and more — detected automatically. No scripts, no webhooks.</p>
+      </div>
+      <div class="card">
+        <h3>Live Activity</h3>
+        <p>A progress bar on your Lock Screen and Dynamic Island, with a haptic and a "Done" card that sticks when it finishes.</p>
+      </div>
+      <div class="card">
+        <h3>Apple Watch</h3>
+        <p>The same Live Activity appears in your Watch Smart Stack — glance at progress from your wrist.</p>
+      </div>
+      <div class="card">
+        <h3>Private by design</h3>
+        <p>Loopback by default, end-to-end encrypted, metadata-only, no telemetry. Your data stays on your devices.</p>
+      </div>
+      <div class="card">
+        <h3>Menu-bar agent</h3>
+        <p>Lives in your Mac menu bar like a good utility. One click to copy your pairing key.</p>
+      </div>
+      <div class="card">
+        <h3>Anything else</h3>
+        <p>Wrap any command: <code>glance run --progress '([0-9]+)%' -- python train.py</code> and watch the bar fill on your phone.</p>
+      </div>
+    </section>
+
+    <section class="downloads" id="downloads">
+      <h2>Get Glance</h2>
+      <div class="dl-grid">
+        <div class="card dl">
+          <h3>Mac</h3>
+          <p>One command in Terminal:</p>
+          <code class="dl-cmd">curl -fsSL https://raw.githubusercontent.com/Zaid1287/Glance/main/install.sh | sh</code>
+          <p class="small">Installs the menu-bar agent and starts it at login.</p>
+        </div>
+        <div class="card dl">
+          <h3>iPhone</h3>
+          <p>Build it to your iPhone with a free Apple ID, or sideload via AltStore.</p>
+          <a class="btn" href="https://github.com/Zaid1287/Glance/blob/main/DISTRIBUTION-iOS.md">iPhone install guide →</a>
+          <p class="small">App Store / TestFlight coming with a paid developer account.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="about">
+      <h2>About</h2>
+      <p>
+        Glance is a small, open-source utility built for one job: the "is it done
+        yet?" moment. It's not remote desktop and not a server monitor — just a
+        fast, private glance at whatever your Mac is working on.
+      </p>
+      <p>
+        <a href="https://github.com/Zaid1287/Glance">Source on GitHub</a> ·
+        <a href="https://github.com/Zaid1287/Glance/blob/main/USAGE.md">Usage</a> ·
+        <a href="https://github.com/Zaid1287/Glance/blob/main/SECURITY.md">Security</a> ·
+        <a href="https://github.com/Zaid1287/Glance/blob/main/LICENSE">MIT License</a>
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    <p>Glance · open source · MIT</p>
+  </footer>
+
+  <script>
+    function copyCmd() {
+      var text = document.getElementById('cmd').textContent;
+      navigator.clipboard.writeText(text).then(function () {
+        var b = document.getElementById('copy');
+        b.textContent = 'Copied';
+        setTimeout(function () { b.textContent = 'Copy'; }, 1500);
+      });
+    }
+  </script>
+</body>
+</html>

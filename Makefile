@@ -7,6 +7,12 @@ build:        ## Debug build of all targets
 release:      ## Optimized release build
 	swift build -c release
 
+release-zip: release  ## Zip release binaries for a GitHub Release (curl install)
+	@mkdir -p dist
+	@rm -f dist/glance-macos-arm64.zip
+	@zip -j dist/glance-macos-arm64.zip .build/release/glance .build/release/glance-bar
+	@echo "dist/glance-macos-arm64.zip"
+
 test:         ## Run the CLT-friendly self-test suite
 	swift run glance-selftest
 
@@ -27,4 +33,4 @@ help:         ## List targets
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
 		awk 'BEGIN{FS=":.*?## "}{printf "  \033[36m%-10s\033[0m %s\n", $$1, $$2}'
 
-.PHONY: build release test xctest bar run clean help
+.PHONY: build release release-zip test xctest bar run clean help
