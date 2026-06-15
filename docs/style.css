@@ -9,6 +9,7 @@
   --blue:     oklch(0.66 0.155 250);
   --blue-hi:  oklch(0.82 0.11 238);
   --green:    oklch(0.80 0.16 152);
+  --orange:   oklch(0.78 0.16 60);
   /* liquid glass */
   --glass:    oklch(0.28 0.008 256 / 0.42);
   --glass-2:  oklch(0.32 0.009 256 / 0.55);
@@ -150,8 +151,17 @@ html:not(.js) .ring { --p: 360deg; }
 .la-status .pct { color: var(--blue-hi); font-weight: 600; font-variant-numeric: tabular-nums; }
 .la-status .word { color: var(--green); font-weight: 700; display: none; }
 .la-bar { margin: 14px 0 10px; height: 11px; border-radius: 99px; background: color-mix(in oklch, white 12%, transparent); overflow: hidden; }
-.la-fill { display: block; height: 100%; width: 0; border-radius: 99px;
-  background: linear-gradient(90deg in oklch, var(--blue), var(--blue-hi)); }
+.la-fill { display: block; position: relative; height: 100%; width: 0; border-radius: 99px;
+  overflow: hidden;
+  background: linear-gradient(90deg in oklch, var(--orange), var(--blue) 55%, var(--blue-hi));
+  box-shadow: 0 0 8px var(--blue), 0 0 16px color-mix(in oklch, var(--blue-hi) 50%, transparent); }
+/* lightning glint sweeping the filled length (matches the iOS bar) */
+.la-fill::after {
+  content: ""; position: absolute; top: 0; bottom: 0; width: 32%;
+  background: linear-gradient(90deg, transparent, oklch(1 0 0 / 0.95), color-mix(in oklch, var(--blue-hi) 60%, transparent), transparent);
+  filter: blur(1px); animation: glint 1s linear infinite;
+}
+@keyframes glint { from { transform: translateX(-130%); } to { transform: translateX(330%); } }
 .la-meta { font-size: 12.5px; color: var(--muted); }
 .la-meta .meta-done { color: var(--green); display: none; }
 
@@ -162,7 +172,8 @@ html:not(.js) .la-status .pct, html:not(.js) .la-meta .meta-run { display: none;
 html:not(.js) .la-status .word, html:not(.js) .la-meta .meta-done { display: inline; }
 html:not(.js) .la-icon .la-dl { opacity: 0; }
 html:not(.js) .la-icon .la-done { opacity: 1; }
-.phone.done .la-fill { width: 100%; background: linear-gradient(90deg, var(--green), var(--green)); }
+.phone.done .la-fill { width: 100%; background: linear-gradient(90deg, var(--green), var(--green)); box-shadow: none; }
+.phone.done .la-fill::after { display: none; }
 .phone.done .la-icon .la-dl { opacity: 0; }
 .phone.done .la-icon .la-done { opacity: 1; }
 .phone.done .la-status .pct { display: none; }
@@ -252,7 +263,8 @@ html.js .reveal.in { opacity: 1; transform: none; filter: blur(0);
   .wire .pulse, .rise { animation: none; }
   .ring { --p: 360deg; background: conic-gradient(from -90deg, var(--green), var(--green) var(--p), transparent 0); }
   html.js .reveal, html.js .reveal.in, .rise { opacity: 1; transform: none; filter: none; transition: none; }
-  .la-fill { width: 100%; background: linear-gradient(90deg, var(--green), var(--green)); }
+  .la-fill { width: 100%; background: linear-gradient(90deg, var(--green), var(--green)); box-shadow: none; }
+  .la-fill::after { animation: none; display: none; }
   .la-status .pct { display: none; } .la-status .word { display: inline; }
   .la-icon .la-dl { display: none; } .la-icon .la-done { opacity: 1; }
   .la-meta .meta-run { display: none; } .la-meta .meta-done { display: inline; }
