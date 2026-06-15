@@ -19,11 +19,18 @@ Dev runs straight from SwiftPM (`make bar`). For public distribution:
 
 - [ ] Wrap `glance-bar` in an `.app` bundle with an `Info.plist`
       (`LSUIElement = true` for the no-Dock accessory app).
-- [ ] Code-sign with a Developer ID Application certificate (needs Xcode /
-      `codesign` + an Apple Developer account).
-- [ ] Notarize (`notarytool submit … --wait`) and staple.
+- [x] Code-sign + notarize tooling: [`scripts/sign-notarize.sh`](scripts/sign-notarize.sh)
+      signs both binaries (Developer ID + hardened runtime) and submits to the notary
+      service. Builder sets `GLANCE_SIGN_ID` + a stored `notarytool` profile once.
+- [ ] Run it on the release binaries and publish the notarized zip as the
+      `glance-macos-arm64.zip` asset.
+- [x] `install.sh` honours `GLANCE_NOTARIZED=1` to skip the quarantine strip once
+      the published asset is notarized (default still strips for the unsigned build).
 - [ ] Optionally ship via the Mac App Store (sandbox + entitlements review) or
       Setapp.
+
+> A bare CLI binary can't be `stapler staple`d (only `.app`/`.dmg`/`.pkg`); Gatekeeper
+> verifies the notarization ticket online on first run, which is fine for the zip.
 
 ## iOS app (future milestone, M4)
 

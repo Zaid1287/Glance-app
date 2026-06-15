@@ -1,5 +1,11 @@
 import SwiftUI
 
+/// Canonical project links, defined once so the app never hardcodes the URL twice.
+enum GlanceLinks {
+    static let website = URL(string: "https://zaid1287.github.io/Glance")!
+    static let source  = URL(string: "https://github.com/Zaid1287/Glance")!
+}
+
 /// Brand palette, ported from the website's dark-grey + blue-accent system
 /// (docs/style.css OKLCH tokens) into sRGB. Shared by the app and the widget
 /// so the Live Activity, the task list, and the marketing site all agree.

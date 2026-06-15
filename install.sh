@@ -29,7 +29,11 @@ unzip -oq "$tmp/$ASSET" -d "$DEST"
 chmod +x "$DEST"/glance "$DEST"/glance-bar 2>/dev/null || true
 
 # Unsigned binary: clear the quarantine flag so Gatekeeper allows it to run.
-xattr -dr com.apple.quarantine "$DEST" 2>/dev/null || true
+# A notarized release passes Gatekeeper on its own — run with GLANCE_NOTARIZED=1
+# to skip this strip.
+if [ "${GLANCE_NOTARIZED:-0}" != "1" ]; then
+  xattr -dr com.apple.quarantine "$DEST" 2>/dev/null || true
+fi
 
 # Put the CLI on PATH if we can; otherwise print a hint.
 if ln -sf "$DEST/glance" /usr/local/bin/glance 2>/dev/null; then

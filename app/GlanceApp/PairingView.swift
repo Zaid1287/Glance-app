@@ -28,6 +28,7 @@ struct PairingView: View {
                             .foregroundStyle(Color.glanceRed)
                     }
                     pairButton
+                    websiteLink
                 }
                 .padding(24)
             }
@@ -119,5 +120,18 @@ struct PairingView: View {
                 .foregroundStyle(trimmed.isEmpty ? Color.glanceFaint : Color.white)
         }
         .disabled(trimmed.isEmpty)
+    }
+
+    private var websiteLink: some View {
+        Link(destination: GlanceLinks.website) {
+            HStack(spacing: 5) {
+                Text("New here? Learn more at zaid1287.github.io/Glance")
+                Image(systemName: "arrow.up.right")
+            }
+            .font(.footnote.weight(.medium))
+            .foregroundStyle(Color.glanceBlueHi)
+            .frame(maxWidth: .infinity)
+            .padding(.top, 4)
+        }
     }
 }

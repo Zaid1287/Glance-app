@@ -15,7 +15,11 @@ settings:
     MARKETING_VERSION: "0.1.0"
     CURRENT_PROJECT_VERSION: "1"
     CODE_SIGN_STYLE: Automatic
-    DEVELOPMENT_TEAM: "MW45P4B969"
+    # Team is taken from the environment so a different builder (e.g. a paid
+    # Developer account for TestFlight) can sign without editing tracked files:
+    #   DEVELOPMENT_TEAM=XXXXXXXXXX xcodegen generate
+    # scripts/gen.sh defaults this to the original free team for local builds.
+    DEVELOPMENT_TEAM: "${DEVELOPMENT_TEAM}"
 
 targets:
   # ----- iPhone app -----
@@ -47,6 +51,10 @@ targets:
       properties:
         CFBundleDisplayName: Glance
         UILaunchScreen: {}
+        # Glance only uses standard ChaCha20-Poly1305 for its own sync — exempt
+        # from export compliance. Declaring it here skips the per-upload prompt
+        # on TestFlight / App Store Connect.
+        ITSAppUsesNonExemptEncryption: false
         NSSupportsLiveActivities: true
         NSLocalNetworkUsageDescription: "Glance connects to your Mac on your local network to show task progress."
         NSBonjourServices:
