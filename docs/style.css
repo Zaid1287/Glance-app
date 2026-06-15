@@ -1,6 +1,4 @@
 @property --p { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
-@property --fill { syntax: "<percentage>"; inherits: false; initial-value: 0%; }
-@property --n { syntax: "<integer>"; inherits: false; initial-value: 0; }
 
 :root {
   --bg:       oklch(0.16 0.004 256);
@@ -143,21 +141,22 @@ section { padding: clamp(60px, 11vw, 128px) 0; }
 .la-done { color: var(--green); opacity: 0; transition: opacity .4s var(--ease); }
 .la-name { font-weight: 600; font-size: 15px; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .la-status { font-size: 14px; font-variant-numeric: tabular-nums; }
-.la-status .pct { color: var(--blue-hi); font-weight: 600; }
-.la-status .pct::after { counter-reset: p var(--n); content: counter(p) "%"; }
+.la-status .pct { color: var(--blue-hi); font-weight: 600; font-variant-numeric: tabular-nums; }
 .la-status .word { color: var(--green); font-weight: 700; display: none; }
 .la-bar { margin: 14px 0 10px; height: 11px; border-radius: 99px; background: color-mix(in oklch, white 12%, transparent); overflow: hidden; }
-.la-fill { display: block; height: 100%; width: var(--fill); border-radius: 99px;
+.la-fill { display: block; height: 100%; width: 0; border-radius: 99px;
   background: linear-gradient(90deg in oklch, var(--blue), var(--blue-hi)); }
 .la-meta { font-size: 12.5px; color: var(--muted); }
 .la-meta .meta-done { color: var(--green); display: none; }
 
-/* mock plays on load, then JS adds .done */
-.la-fill { animation: fillbar 3.4s var(--ease) 0.9s both; }
-.la-status .pct { animation: count 3.4s var(--ease) 0.9s both; }
-@keyframes fillbar { from { --fill: 0%; } to { --fill: 100%; } }
-@keyframes count   { from { --n: 0; } to { --n: 100; } }
-.phone.done .la-fill { animation: none; --fill: 100%; background: linear-gradient(90deg, var(--green), var(--green)); }
+/* JS drives the fill width + the % counter (motion.js), then adds .done.
+   No-JS shows the finished state so the mock never reads as broken. */
+html:not(.js) .la-fill { width: 100%; background: linear-gradient(90deg, var(--green), var(--green)); }
+html:not(.js) .la-status .pct, html:not(.js) .la-meta .meta-run { display: none; }
+html:not(.js) .la-status .word, html:not(.js) .la-meta .meta-done { display: inline; }
+html:not(.js) .la-icon .la-dl { opacity: 0; }
+html:not(.js) .la-icon .la-done { opacity: 1; }
+.phone.done .la-fill { width: 100%; background: linear-gradient(90deg, var(--green), var(--green)); }
 .phone.done .la-icon .la-dl { opacity: 0; }
 .phone.done .la-icon .la-done { opacity: 1; }
 .phone.done .la-status .pct { display: none; }
@@ -208,10 +207,8 @@ section { padding: clamp(60px, 11vw, 128px) 0; }
   .tile, .tile-wide, .tile-tall { grid-column: span 2; grid-row: auto; } }
 
 /* ---------- get ---------- */
-/* minmax(0,..) lets the Mac card ignore the long curl command's min-width so it
-   can't starve the iPhone column; align-items:start sizes each card to its own
-   content (no dead space under the short Mac card). */
-.get-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.85fr); gap: 18px; align-items: start; }
+/* Mac and iPhone stacked one over the other. */
+.get-grid { display: grid; grid-template-columns: 1fr; gap: 18px; }
 .get-mac, .get-ios { padding: 28px; border-radius: 20px; }
 .get-mac h3, .get-ios h3 { font-family: "Bricolage Grotesque", sans-serif; font-size: 22px; margin-bottom: 8px; }
 .get-mac p, .get-ios p { color: var(--muted); font-size: 15px; }
@@ -222,7 +219,6 @@ section { padding: clamp(60px, 11vw, 128px) 0; }
 .btn:hover { background: var(--blue-hi); }
 .btn:active { transform: scale(0.97); }
 .small { font-size: 13px; color: var(--faint); }
-@media (max-width: 760px) { .get-grid { grid-template-columns: 1fr; } }
 
 /* ---------- about / footer ---------- */
 .about { text-align: center; }

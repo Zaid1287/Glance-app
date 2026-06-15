@@ -18,19 +18,45 @@
   );
   document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
 
-  // Live-Activity mock: CSS fills the bar; mark .done when it finishes; replay on click
+  // Live-Activity mock: JS drives the fill width + the % counter so the number
+  // actually counts up (an animated CSS counter() doesn't render in Safari or
+  // Firefox — it would jump 0 -> Done). Easing holds a constant rate up to 80%,
+  // then decelerates into the finish. Replays on click.
   const mock = document.getElementById("mock");
   if (mock) {
     const fill = mock.querySelector(".la-fill");
-    fill.addEventListener("animationend", () => mock.classList.add("done"));
-    mock.addEventListener("click", () => {
+    const pct = mock.querySelector(".pct");
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)");
+    const DURATION = 3400;
+    let raf = 0;
+
+    // constant velocity until value 0.8, then ease-out to 1.0 (continuous at the seam)
+    const ease = (t) => {
+      const split = 0.55; // fraction of the time spent reaching 80%
+      if (t < split) return (0.8 / split) * t;
+      const u = (t - split) / (1 - split);
+      return 0.8 + 0.2 * (1 - (1 - u) * (1 - u));
+    };
+
+    function play() {
+      cancelAnimationFrame(raf);
+      if (reduce.matches) { mock.classList.add("done"); return; } // CSS shows finished state
       mock.classList.remove("done");
-      mock.querySelectorAll(".la-fill, .la-status .pct").forEach((n) => {
-        n.style.animation = "none";
-        void n.offsetWidth; // reflow to restart
-        n.style.animation = "";
-      });
-    });
+      let start = 0;
+      const step = (ts) => {
+        if (!start) start = ts;
+        const t = Math.min((ts - start) / DURATION, 1);
+        const v = ease(t);
+        fill.style.width = v * 100 + "%";
+        pct.textContent = Math.round(v * 100) + "%";
+        if (t < 1) raf = requestAnimationFrame(step);
+        else mock.classList.add("done");
+      };
+      raf = requestAnimationFrame(step);
+    }
+
+    play();
+    mock.addEventListener("click", play);
   }
 
   // Copy-to-clipboard (icon swaps to a check)
