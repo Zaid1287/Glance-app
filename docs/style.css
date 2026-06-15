@@ -208,13 +208,16 @@ section { padding: clamp(60px, 11vw, 128px) 0; }
   .tile, .tile-wide, .tile-tall { grid-column: span 2; grid-row: auto; } }
 
 /* ---------- get ---------- */
-.get-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 18px; }
+/* minmax(0,..) lets the Mac card ignore the long curl command's min-width so it
+   can't starve the iPhone column; align-items:start sizes each card to its own
+   content (no dead space under the short Mac card). */
+.get-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.85fr); gap: 18px; align-items: start; }
 .get-mac, .get-ios { padding: 28px; border-radius: 20px; }
 .get-mac h3, .get-ios h3 { font-family: "Bricolage Grotesque", sans-serif; font-size: 22px; margin-bottom: 8px; }
 .get-mac p, .get-ios p { color: var(--muted); font-size: 15px; }
 .install-lg { margin-top: 16px; }
 .btn { display: inline-block; margin: 14px 0 6px; padding: 11px 20px; border-radius: 999px;
-  background: var(--ink); color: oklch(0.16 0.004 256); font-weight: 600;
+  background: var(--ink); color: oklch(0.16 0.004 256); font-weight: 600; white-space: nowrap;
   transition: transform .2s var(--ease), background .2s var(--ease); }
 .btn:hover { background: var(--blue-hi); }
 .btn:active { transform: scale(0.97); }
