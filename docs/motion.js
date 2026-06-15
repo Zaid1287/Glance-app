@@ -26,6 +26,7 @@
   if (mock) {
     const fill = mock.querySelector(".la-fill");
     const pct = mock.querySelector(".pct");
+    const ring = document.querySelector(".ring"); // outer ring tracks the same progress
     const reduce = matchMedia("(prefers-reduced-motion: reduce)");
     const DURATION = 3400;
     let raf = 0;
@@ -38,10 +39,18 @@
       return 0.8 + 0.2 * (1 - (1 - u) * (1 - u));
     };
 
+    // keep the ring sweep locked to the bar's fill value
+    const setRing = (v, done) => {
+      if (!ring) return;
+      ring.style.setProperty("--p", (v * 360).toFixed(1) + "deg");
+      ring.classList.toggle("full", !!done);
+    };
+
     function play() {
       cancelAnimationFrame(raf);
-      if (reduce.matches) { mock.classList.add("done"); return; } // CSS shows finished state
+      if (reduce.matches) { mock.classList.add("done"); setRing(1, true); return; } // CSS shows finished state
       mock.classList.remove("done");
+      setRing(0, false);
       let start = 0;
       const step = (ts) => {
         if (!start) start = ts;
@@ -49,8 +58,9 @@
         const v = ease(t);
         fill.style.width = v * 100 + "%";
         pct.textContent = Math.round(v * 100) + "%";
+        setRing(v, false);
         if (t < 1) raf = requestAnimationFrame(step);
-        else mock.classList.add("done");
+        else { mock.classList.add("done"); setRing(1, true); }
       };
       raf = requestAnimationFrame(step);
     }
