@@ -143,7 +143,7 @@ struct TaskCard: View {
             }
 
             if isActive {
-                ThickBar(fraction: cs.fraction, color: .glanceBlue, height: 10)
+                ThickBar(fraction: cs.fraction, running: true, height: 10)
             }
 
             if !subtitle.isEmpty {

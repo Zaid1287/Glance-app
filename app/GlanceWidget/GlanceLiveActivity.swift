@@ -71,9 +71,9 @@ private func progressBar(_ s: GlanceActivityAttributes.ContentState) -> some Vie
     if s.isTerminal {
         ThickBar(fraction: 1, color: stateTint(s))
     } else if let fraction = s.fraction {
-        ThickBar(fraction: fraction, color: .glanceBlue)
+        ThickBar(fraction: fraction, running: true)
     } else {
-        ThickBar(fraction: nil, color: .glanceBlue)
+        ThickBar(fraction: nil, running: true)
     }
 }
 
