@@ -71,9 +71,9 @@ private func progressBar(_ s: GlanceActivityAttributes.ContentState) -> some Vie
     if s.isTerminal {
         ThickBar(fraction: 1, color: stateTint(s))
     } else if let fraction = s.fraction {
-        ThickBar(fraction: fraction, color: .blue)
+        ThickBar(fraction: fraction, color: .glanceBlue)
     } else {
-        ThickBar(fraction: nil, color: .blue)
+        ThickBar(fraction: nil, color: .glanceBlue)
     }
 }
 
@@ -89,11 +89,11 @@ private func stateGlyph(_ s: GlanceActivityAttributes.ContentState) -> String {
 
 private func stateTint(_ s: GlanceActivityAttributes.ContentState) -> Color {
     switch s.state {
-    case "done":    return .green
-    case "failed":  return .red
-    case "stalled": return .orange
-    case "paused":  return .gray
-    default:        return .blue
+    case "done":    return .glanceGreen
+    case "failed":  return .glanceRed
+    case "stalled": return .glanceOrange
+    case "paused":  return .glanceFaint
+    default:        return .glanceBlue
     }
 }
 

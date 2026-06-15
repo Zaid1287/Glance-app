@@ -28,6 +28,7 @@ targets:
       - Shared/SharedStore.swift
       - Shared/WatchLink.swift
       - Shared/ThickBar.swift
+      - Shared/Theme.swift
     dependencies:
       - package: GlanceCore
         product: GlanceCore
@@ -61,6 +62,7 @@ targets:
       - Shared/GlanceActivityAttributes.swift
       - Shared/SharedStore.swift
       - Shared/ThickBar.swift
+      - Shared/Theme.swift
     dependencies:
       - package: GlanceCore
         product: GlanceCore

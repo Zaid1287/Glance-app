@@ -80,30 +80,24 @@ final class GlanceBarController: NSObject {
         return active + Array(recent)
     }
 
+    /// Minimal layout: lead with what the app is *for* (running tasks), keep a few
+    /// recent finishes, and tuck pairing into a submenu so it isn't shouting on
+    /// every open.
     private func rebuildMenu() {
         menu.removeAllItems()
-
-        if let fp = keyFingerprint {
-            menu.addItem(header("Pairing"))
-            menu.addItem(disabled("Key fingerprint: \(fp)"))
-            let copy = NSMenuItem(title: "Copy pairing key", action: #selector(copyPairingKey), keyEquivalent: "c")
-            copy.target = self
-            menu.addItem(copy)
-            menu.addItem(.separator())
-        }
 
         let active = store.activeTasks.sorted { $0.createdAt < $1.createdAt }
         let recent = store.allTasks
             .filter { $0.state.isTerminal }
             .sorted { ($0.finishedAt ?? .distantPast) > ($1.finishedAt ?? .distantPast) }
-            .prefix(5)
+            .prefix(3)
 
         if let button = statusItem.button {
             button.title = active.isEmpty ? "" : " \(active.count)"
         }
 
         if active.isEmpty {
-            menu.addItem(disabled("No active tasks"))
+            menu.addItem(disabled("Nothing running"))
         } else {
             menu.addItem(header("Active"))
             active.forEach { menu.addItem(taskItem($0)) }
@@ -116,6 +110,18 @@ final class GlanceBarController: NSObject {
         }
 
         menu.addItem(.separator())
+
+        if let fp = keyFingerprint {
+            let pairing = NSMenuItem(title: "Pairing", action: nil, keyEquivalent: "")
+            let sub = NSMenu()
+            sub.addItem(disabled("Key fingerprint: \(fp)"))
+            let copy = NSMenuItem(title: "Copy pairing key", action: #selector(copyPairingKey), keyEquivalent: "c")
+            copy.target = self
+            sub.addItem(copy)
+            pairing.submenu = sub
+            menu.addItem(pairing)
+        }
+
         let quit = NSMenuItem(title: "Quit Glance", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
         menu.addItem(quit)
     }
