@@ -89,7 +89,7 @@ opt-in.
 
 ## 10. Contact
 
-Questions: **[contact email]** · or open an issue at
+Questions: **abdulhadi1234knight@gmail.com** · or open an issue at
 https://github.com/Zaid1287/Glance/issues.
 
 ---

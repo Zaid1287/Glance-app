@@ -79,12 +79,12 @@ updated effective date. Continued use after a change means you accept it.
 
 ## 10. Governing law
 
-These Terms are governed by the laws of **[jurisdiction]**, without regard to
+These Terms are governed by the laws of **Telangana, India**, without regard to
 conflict-of-laws rules. *(Set your jurisdiction before publishing.)*
 
 ## 11. Contact
 
-**[contact email]** · https://github.com/Zaid1287/Glance/issues
+**abdulhadi1234knight@gmail.com** · https://github.com/Zaid1287/Glance/issues
 
 ---
 

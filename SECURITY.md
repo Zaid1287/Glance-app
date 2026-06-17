@@ -2,7 +2,7 @@
 
 ## Reporting a vulnerability
 
-Email security reports to **security@glance.app** (replace with the maintainer's
+Email security reports to **abdulhadi1234knight@gmail.com** (replace with the maintainer's
 address before release). Please do not open public issues for security bugs.
 We aim to acknowledge within 72 hours.
 
