@@ -6,7 +6,7 @@
   <title>Glance — is it done yet?</title>
   <meta name="description" content="Track long-running Mac tasks from your iPhone. A Live Activity for every download, build, render and training run. Zero config, end-to-end encrypted." />
   <meta property="og:title" content="Glance — is it done yet?" />
-  <meta property="og:description" content="Your Mac's long tasks, glanceable from your iPhone Lock Screen. Encrypted, zero-config, open source." />
+  <meta property="og:description" content="Your Mac's long tasks, glanceable from your iPhone Lock Screen. Encrypted, zero-config. Join the waitlist." />
   <meta property="og:image" content="icon.png" />
   <meta name="theme-color" content="#0a1f6e" />
   <link rel="icon" href="icon.png" />
@@ -27,8 +27,7 @@
     <nav class="nav-links">
       <a href="#how">How it works</a>
       <a href="#features">Features</a>
-      <a href="#get">Get it</a>
-      <a class="nav-gh" href="https://github.com/Zaid1287/Glance">GitHub ↗</a>
+      <a class="nav-gh" href="#get">Join waitlist</a>
     </nav>
   </header>
 
@@ -44,15 +43,11 @@
         </p>
 
         <div class="cta rise" style="--d:.23s">
-          <div class="install" id="install">
-            <span class="prompt">$</span>
-            <code id="cmd">curl -fsSL https://raw.githubusercontent.com/Zaid1287/Glance/main/install.sh | sh</code>
-            <button id="copy" aria-label="Copy install command">
-              <svg class="i-copy" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
-              <svg class="i-check" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-            </button>
-          </div>
-          <p class="cta-sub">macOS · Apple silicon · free &amp; open source · <a href="#get">iPhone app →</a></p>
+          <form class="waitlist" action="[WAITLIST_ENDPOINT]" method="POST" novalidate>
+            <input type="email" name="email" required placeholder="you@example.com" autocomplete="email" aria-label="Email address" />
+            <button type="submit">Join the waitlist</button>
+          </form>
+          <p class="cta-sub">Coming to the App Store for iPhone, with a Mac companion. <a href="#get">Be first →</a></p>
         </div>
       </div>
 
@@ -128,28 +123,18 @@
       </div>
     </section>
 
-    <!-- GET IT -->
+    <!-- WAITLIST -->
     <section class="get" id="get">
-      <h2 class="reveal" data-i="0">Get Glance</h2>
-      <div class="get-grid">
-        <div class="get-mac reveal" data-i="1">
-          <h3>Mac</h3>
-          <p>One line in Terminal. Installs the menu-bar agent and starts it at login.</p>
-          <div class="install install-lg">
-            <span class="prompt">$</span>
-            <code id="cmd2">curl -fsSL https://raw.githubusercontent.com/Zaid1287/Glance/main/install.sh | sh</code>
-            <button id="copy2" aria-label="Copy install command">
-              <svg class="i-copy" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
-              <svg class="i-check" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-            </button>
-          </div>
-        </div>
-        <div class="get-ios reveal" data-i="2">
-          <h3>iPhone</h3>
-          <p>Build it to your iPhone with a free Apple ID, or sideload with AltStore.</p>
-          <a class="btn" href="https://github.com/Zaid1287/Glance/blob/main/DISTRIBUTION-iOS.md">iPhone install guide →</a>
-          <p class="small">TestFlight &amp; App Store coming with a developer account.</p>
-        </div>
+      <h2 class="reveal" data-i="0">Be first when Glance lands.</h2>
+      <div class="waitlist-card reveal" data-i="1">
+        <p>Glance is coming to the App Store — iPhone, Apple Watch (Smart Stack), and the
+          Mac companion. Join the waitlist and we'll send one email the day it's live.
+          No spam, ever.</p>
+        <form class="waitlist" action="[WAITLIST_ENDPOINT]" method="POST" novalidate>
+          <input type="email" name="email" required placeholder="you@example.com" autocomplete="email" aria-label="Email address" />
+          <button type="submit">Notify me</button>
+        </form>
+        <p class="small">macOS · iPhone · Apple Watch · end-to-end encrypted</p>
       </div>
     </section>
 
@@ -160,14 +145,14 @@
         server monitor — a fast, private glance at whatever your Mac is working on.
       </p>
       <p class="links reveal" data-i="1">
-        <a href="https://github.com/Zaid1287/Glance">Source</a>
-        <a href="https://github.com/Zaid1287/Glance/blob/main/USAGE.md">Usage</a>
-        <a href="https://github.com/Zaid1287/Glance/blob/main/SECURITY.md">Security</a>
-        <a href="https://github.com/Zaid1287/Glance/blob/main/LICENSE">MIT</a>
+        <a href="legal.html#privacy">Privacy</a>
+        <a href="legal.html#terms">Terms</a>
+        <a href="legal.html#data">Data &amp; Compliance</a>
+        <a href="legal.html#ip">IP</a>
       </p>
     </section>
   </main>
 
-  <footer><p>Glance · open source · MIT</p></footer>
+  <footer><p>Glance · © 2026 · <a href="legal.html#privacy">Privacy</a> · <a href="legal.html#terms">Terms</a></p></footer>
 </body>
 </html>
