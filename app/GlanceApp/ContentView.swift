@@ -71,7 +71,6 @@ struct ContentView: View {
                 Label("Paired · \(fp)", systemImage: "checkmark.seal")
             }
             Link(destination: GlanceLinks.website) { Label("Website", systemImage: "safari") }
-            Link(destination: GlanceLinks.source) { Label("Source on GitHub", systemImage: "chevron.left.forwardslash.chevron.right") }
             Divider()
             Button("Unpair", role: .destructive) { model.unpair() }
         } label: {

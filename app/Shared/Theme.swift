@@ -3,7 +3,6 @@ import SwiftUI
 /// Canonical project links, defined once so the app never hardcodes the URL twice.
 enum GlanceLinks {
     static let website = URL(string: "https://zaid1287.github.io/Glance")!
-    static let source  = URL(string: "https://github.com/Zaid1287/Glance")!
 }
 
 /// Brand palette, ported from the website's dark-grey + blue-accent system
