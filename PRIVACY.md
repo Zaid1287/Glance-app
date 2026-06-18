@@ -12,8 +12,8 @@ Glance website (https://zaid1287.github.io/Glance).
 
 ## 1. Who we are
 
-Glance is a free, open-source project (the "Software"), maintained by the Glance
-author ("we", "us"). Source: https://github.com/Zaid1287/Glance.
+Glance is a proprietary application (the "Software"), maintained by the Glance
+author ("we", "us").
 
 ## 2. Information we collect
 
@@ -89,8 +89,7 @@ opt-in.
 
 ## 10. Contact
 
-Questions: **abdulhadi1234knight@gmail.com** · or open an issue at
-https://github.com/Zaid1287/Glance/issues.
+Questions: **abdulhadi1234knight@gmail.com**.
 
 ---
 

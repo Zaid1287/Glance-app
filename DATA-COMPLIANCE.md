@@ -82,7 +82,7 @@ metadata — never plaintext task data.
 
 ## 10. Contact
 
-**abdulhadi1234knight@gmail.com** · https://github.com/Zaid1287/Glance/issues
+**abdulhadi1234knight@gmail.com**
 
 ---
 

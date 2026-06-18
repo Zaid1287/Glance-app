@@ -4,13 +4,16 @@ The Mac side installs with one command (see the [README](README.md)). The iPhone
 app is the part Apple gatekeeps — how you install it depends on whether you have
 a paid Apple Developer account.
 
-## Free (no paid account)
+## Maintainer / authorized builder (no paid account)
 
-There's no free way to put an iOS app on the App Store or TestFlight, but you can
-still run Glance on your own iPhone:
+> The source is proprietary (see [LICENSE](../LICENSE)); these build/sideload
+> paths are for the maintainer and authorized builders, not general redistribution.
 
-### A. Build from source (simplest if you have a Mac + Xcode)
-1. `git clone https://github.com/Zaid1287/Glance && cd Glance/app`
+There's no free way to put an iOS app on the App Store or TestFlight, but the
+maintainer can still run Glance on their own iPhone:
+
+### A. Build from source (simplest with a Mac + Xcode)
+1. `git clone https://github.com/Zaid1287/Glance-app && cd Glance-app/app`
 2. `./bootstrap.sh` (installs XcodeGen + platforms, generates the project, opens it)
 3. In Xcode: select the **GlanceApp** scheme + your iPhone, set your **Team**
    (a free Apple ID works) under Signing, and press **Run**.

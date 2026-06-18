@@ -11,13 +11,10 @@ sharing.
 > **Status: working end-to-end on real hardware.** Mac agent → encrypted LAN →
 > iPhone Live Activity, verified on a physical iPhone. See [Status](#status).
 
-**Install (Mac):**
+Glance is coming to the **App Store** (iPhone, with a Mac companion). Join the
+waitlist at **https://zaid1287.github.io/Glance** to be notified at launch.
 
-```sh
-curl -fsSL https://raw.githubusercontent.com/Zaid1287/Glance/main/install.sh | sh
-```
-
-Website: **https://zaid1287.github.io/Glance** · iPhone: [install guide](DISTRIBUTION-iOS.md).
+> This repository is **source-available, not open source** — see [LICENSE](LICENSE).
 
 It is **not** remote desktop. It doesn't mirror your screen. It tracks the one
 high-frequency moment — progress, and done/failed — and nothing else.
@@ -96,4 +93,5 @@ iPhone, pair, and test.
 
 ## License
 
-[MIT](LICENSE).
+**Proprietary — © 2026, all rights reserved.** Source-available for reference;
+not open source. See [LICENSE](LICENSE).

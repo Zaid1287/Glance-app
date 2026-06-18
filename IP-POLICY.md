@@ -7,15 +7,15 @@ third-party materials it uses, and how to report claimed infringement.
 
 ## 1. Ownership and license
 
-- **Source code** is released under the **MIT License** ([LICENSE](LICENSE)). You
-  may use, modify, and redistribute it under those terms. Copyright © 2026 the
-  Glance author.
+- **Source code** is **proprietary — © 2026 the Glance author, all rights
+  reserved** ([LICENSE](LICENSE)). It is source-available for reference only and
+  is not licensed for use, copying, modification, or redistribution.
 - **Website content, copy, and design** (text and layout at
   https://zaid1287.github.io/Glance) are © 2026 the Glance author, all rights
   reserved except as needed to use the Software.
 - The **"Glance" name, the app icon, and associated logos/marks** are the
-  project's marks. The MIT License covers the code, **not** the name or logos —
-  please don't use them in a way that implies endorsement or could confuse users
+  project's marks — please don't use them in a way that implies endorsement or
+  could confuse users
   about the source of a product.
 
 ## 2. Third-party materials we use (and their licenses)
@@ -73,8 +73,7 @@ from contributing to the project.
 
 ## 7. Contact
 
-IP and infringement matters: **[designated agent / contact email]**
-General: https://github.com/Zaid1287/Glance/issues
+IP and infringement matters: **abdulhadi1234knight@gmail.com**
 
 ---
 

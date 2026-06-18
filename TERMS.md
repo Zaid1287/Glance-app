@@ -9,17 +9,20 @@ you do not agree, do not use the Software.
 
 ## 1. The Software
 
-Glance is a free, open-source utility that detects long-running tasks on your Mac
-and shows their status on a paired iPhone. It runs on your own devices and your
-local network; we operate no servers and provide no hosted service.
+Glance is a proprietary utility that detects long-running tasks on your Mac and
+shows their status on a paired iPhone. It runs on your own devices and your local
+network; we operate no servers and provide no hosted service.
 
 ## 2. License
 
-The Software is licensed under the **MIT License** ([LICENSE](LICENSE)). Your
-rights to use, copy, modify, and distribute the source code are governed by that
-license. These Terms cover your use of the distributed app and website; where the
-MIT License and these Terms differ regarding the source code, the MIT License
-controls for the code.
+Glance is **proprietary software, © 2026, all rights reserved.** We grant you a
+limited, personal, non-transferable, non-exclusive, revocable license to use the
+App on devices you own or control, subject to these Terms and — for App Store
+installs — Apple's Licensed Application End User License Agreement (EULA). The
+source code is made publicly viewable for reference only and is **not** licensed
+for use, copying, modification, or redistribution; you may not reverse-engineer,
+resell, or redistribute the App except as that EULA or applicable law expressly
+permits.
 
 ## 3. Acceptable use
 
@@ -84,7 +87,7 @@ conflict-of-laws rules. *(Set your jurisdiction before publishing.)*
 
 ## 11. Contact
 
-**abdulhadi1234knight@gmail.com** · https://github.com/Zaid1287/Glance/issues
+**abdulhadi1234knight@gmail.com**
 
 ---
 

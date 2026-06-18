@@ -1,0 +1,19 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "glance-site",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "4178"],
+      "port": 4178,
+      "cwd": "/Users/zaid/Glance/docs"
+    },
+    {
+      "name": "volt-padel",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "4179"],
+      "port": 4179,
+      "cwd": "/Users/zaid/Glance/.claude/volt-preview"
+    }
+  ]
+}
