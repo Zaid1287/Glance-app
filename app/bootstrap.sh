@@ -24,6 +24,7 @@ fi
 echo "==> Generating Glance.xcodeproj"
 # Default to the original free personal team; a paid builder overrides with
 #   DEVELOPMENT_TEAM=XXXXXXXXXX ./bootstrap.sh
+export GLANCE_BUNDLE_ID="${GLANCE_BUNDLE_ID:-com.zaid.glance}"
 export DEVELOPMENT_TEAM="${DEVELOPMENT_TEAM:-MW45P4B969}"
 echo "    Signing team: $DEVELOPMENT_TEAM"
 xcodegen generate

@@ -43,7 +43,7 @@ targets:
       # GlanceWatch / embed: true` once a real Apple Watch is paired to Xcode.
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.zaid.glance
+        PRODUCT_BUNDLE_IDENTIFIER: ${GLANCE_BUNDLE_ID}
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         TARGETED_DEVICE_FAMILY: "1"
     info:
@@ -76,7 +76,7 @@ targets:
         product: GlanceCore
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.zaid.glance.widget
+        PRODUCT_BUNDLE_IDENTIFIER: ${GLANCE_BUNDLE_ID}.widget
     info:
       path: GlanceWidget/Info.plist
       properties:
@@ -94,13 +94,13 @@ targets:
       - Shared/WatchLink.swift
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.zaid.glance.watchkitapp
+        PRODUCT_BUNDLE_IDENTIFIER: ${GLANCE_BUNDLE_ID}.watchkitapp
     info:
       path: GlanceWatch/Info.plist
       properties:
         CFBundleDisplayName: Glance
         WKApplication: true
-        WKCompanionAppBundleIdentifier: com.zaid.glance
+        WKCompanionAppBundleIdentifier: ${GLANCE_BUNDLE_ID}
 
 # Explicit shared scheme so GlanceApp always appears in the run dropdown
 # (and so the macOS CLI schemes — glance/glance-bar — aren't picked by mistake).
