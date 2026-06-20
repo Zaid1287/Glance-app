@@ -4,9 +4,12 @@ import Foundation
 /// and reports each as a `.download` task with live bytes + throughput.
 ///
 /// MVP uses polling for portability — FSEvents is the production upgrade behind
-/// this same class (the rest of the system never sees the difference). Browser
-/// partials rarely expose a Content-Length on disk, so `totalUnitCount` is left
-/// nil and we report honest bytes-downloaded + throughput rather than a fake %.
+/// this same class (the rest of the system never sees the difference).
+///
+/// Safari's `.download` package carries an `Info.plist` with the expected total
+/// and bytes-so-far, so for Safari we report a real **%**. Other browsers'
+/// partials (`.crdownload`, `.part`, …) don't expose a total on disk, so they
+/// stay honest bytes-downloaded + throughput rather than a fake %.
 public final class DownloadsDetector: Detector {
     /// In-progress markers across the common browsers.
     /// Safari uses a `*.download` *package directory*; the rest are file suffixes.
@@ -66,14 +69,17 @@ public final class DownloadsDetector: Detector {
         // New + ongoing downloads.
         for url in entries where Self.isInProgress(url.path) {
             let path = url.path
-            let bytes = Self.sizeOnDisk(of: url)
+            // Safari exposes the expected total (-> real %); others give bytes only.
+            let safari = Self.safariProgress(of: url)
+            let bytes = safari?.completed ?? Self.sizeOnDisk(of: url)
+            let total = safari?.total
 
             if tracked[path] == nil {
                 let task = TrackedTask(
                     kind: .download,
                     name: Self.displayName(for: url),
                     state: .running,
-                    progress: TaskProgress(completedUnitCount: bytes),
+                    progress: TaskProgress(completedUnitCount: bytes, totalUnitCount: total),
                     detail: "downloading"
                 )
                 tracked[path] = (task.id, ThroughputEstimator(), bytes)
@@ -81,11 +87,12 @@ public final class DownloadsDetector: Detector {
             } else {
                 var entry = tracked[path]!
                 guard bytes != entry.lastBytes else { continue } // unchanged -> don't churn
-                let (tput, eta) = entry.est.update(bytes: bytes, total: nil, now: now)
+                let (tput, eta) = entry.est.update(bytes: bytes, total: total, now: now)
                 entry.lastBytes = bytes
                 tracked[path] = entry
                 if var task = store.task(id: entry.id) {
                     task.progress.completedUnitCount = bytes
+                    task.progress.totalUnitCount = total ?? task.progress.totalUnitCount
                     task.progress.throughputBytesPerSec = tput
                     task.progress.etaSeconds = eta
                     store.upsert(task, now: now)
@@ -117,6 +124,22 @@ public final class DownloadsDetector: Detector {
             break
         }
         return name.isEmpty ? url.lastPathComponent : name
+    }
+
+    /// For a Safari `.download` package, read the expected total + bytes-so-far
+    /// from its `Info.plist` so we can report a real %. Returns nil for other
+    /// browsers (no total on disk) or if the keys aren't present yet.
+    public static func safariProgress(of url: URL) -> (completed: Int64, total: Int64)? {
+        guard url.pathExtension == "download" else { return nil }
+        let plistURL = url.appendingPathComponent("Info.plist")
+        guard let data = try? Data(contentsOf: plistURL),
+              let obj = try? PropertyListSerialization.propertyList(from: data, options: [], format: nil),
+              let plist = obj as? [String: Any],
+              let total = (plist["DownloadEntryProgressTotalToLoad"] as? NSNumber)?.int64Value,
+              total > 0
+        else { return nil }
+        let done = (plist["DownloadEntryProgressBytesSoFar"] as? NSNumber)?.int64Value ?? 0
+        return (min(done, total), total)
     }
 
     /// Byte size of a file, or recursive total for a Safari `.download` package.
