@@ -1,13 +1,13 @@
 #!/bin/sh
 # Glance — Mac menu-bar agent installer.
-#   curl -fsSL https://raw.githubusercontent.com/Zaid1287/Glance/main/install.sh | sh
+#   curl -fsSL https://raw.githubusercontent.com/Zaid1287/Glance-app/main/install.sh | sh
 #
 # Downloads the latest release binaries, installs them to ~/.glance/bin, sets the
 # agent to start at login, and launches it. No Apple account needed — the binary
 # is unsigned, so we clear the download quarantine so macOS will run it.
 set -eu
 
-REPO="Zaid1287/Glance"
+REPO="Zaid1287/Glance-app"
 DEST="$HOME/.glance/bin"
 ASSET="glance-macos-arm64.zip"
 URL="https://github.com/$REPO/releases/latest/download/$ASSET"
