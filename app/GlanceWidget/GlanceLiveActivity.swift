@@ -113,6 +113,5 @@ private func compactValue(_ s: GlanceActivityAttributes.ContentState) -> String 
 
 private func subtitle(_ s: GlanceActivityAttributes.ContentState) -> String {
     if s.isTerminal { return s.state == "failed" ? "Failed" : "Done" }
-    let sub = GlanceFormat.subtitle(s)
-    return sub.isEmpty ? (s.detail ?? "") : sub
+    return GlanceFormat.subtitle(s)   // metrics only, never the raw wrapped command
 }

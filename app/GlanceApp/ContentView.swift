@@ -173,9 +173,9 @@ struct TaskCard: View {
     }
 
     private var subtitle: String {
-        if cs.isTerminal { return GlanceFormat.subtitle(cs) }
-        let sub = GlanceFormat.subtitle(cs)
-        return sub.isEmpty ? (cs.detail ?? "") : sub
+        // Metrics only (bytes · throughput / Done · time). Never the raw wrapped
+        // command — that read as junk for `glance run` tasks.
+        GlanceFormat.subtitle(cs)
     }
 
     private var glyph: String {
