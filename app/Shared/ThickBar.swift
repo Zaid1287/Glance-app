@@ -13,7 +13,6 @@ struct ThickBar: View {
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var streak = false
-    @State private var sweep = false
 
     // Matches the website bar exactly: orange → blue at 55% → bright blue.
     private var liveGradient: LinearGradient {
@@ -46,22 +45,21 @@ struct ThickBar: View {
                         Capsule().fill(color).frame(width: w)
                     }
                 } else {
-                    // indeterminate: an orange→blue gradient gliding left↔right
+                    // indeterminate (unknown total): the full website-style bar with
+                    // the glint sweeping — signals "working, size unknown" while
+                    // matching the determinate look instead of a lonely blob.
                     Capsule()
-                        .fill(LinearGradient(
-                            colors: [Color.glanceOrange.opacity(0.2), .glanceBlue, .glanceBlueHi.opacity(0.2)],
-                            startPoint: .leading, endPoint: .trailing))
-                        .frame(width: geo.size.width * 0.4)
-                        .offset(x: sweep && !reduceMotion ? geo.size.width * 0.6 : 0)
-                        .animation(reduceMotion ? .default
-                                   : .easeInOut(duration: 1.1).repeatForever(autoreverses: true),
-                                   value: sweep)
-                        .shadow(color: Color.glanceBlue.opacity(0.6), radius: 8)
+                        .fill(liveGradient)
+                        .overlay(lightning(width: geo.size.width))
+                        .clipShape(Capsule())
+                        .opacity(0.92)
+                        .shadow(color: Color.glanceBlue, radius: 4)
+                        .shadow(color: Color.glanceBlueHi.opacity(0.5), radius: 8)
                 }
             }
         }
         .frame(height: height)
-        .onAppear { streak = true; sweep = true }
+        .onAppear { streak = true }
     }
 
     /// A bright glint that sweeps the filled bar — the "lightning". Mirrors the
