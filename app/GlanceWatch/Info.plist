@@ -23,6 +23,6 @@
 	<key>WKApplication</key>
 	<true/>
 	<key>WKCompanionAppBundleIdentifier</key>
-	<string>com.zaid.glance</string>
+	<string>${GLANCE_BUNDLE_ID}</string>
 </dict>
 </plist>
